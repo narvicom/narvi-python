@@ -9,7 +9,7 @@ with open(os.path.join(here, "narvi", "version.py"), encoding="utf-8") as f:
 
 setup(
     name="narvi",
-    author="Narvi",
+    author="Narvi Payments Oy Ab ",
     version=version_contents["VERSION"],
     packages=find_packages(),
     description="Narvi API library",
