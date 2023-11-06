@@ -20,7 +20,7 @@ a time.
 To get started with our Python application, you can run the following command to install it:
 
 ```sh
-pip install --upgrade narvi
+pip3 install --upgrade git+https://gitlab.narvi.com/narvi/fnt/narvi_python
 ```
 
 Install from source with:
