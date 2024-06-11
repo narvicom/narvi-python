@@ -60,7 +60,7 @@ class RequestClient(object):
 class NarviAccountClient(object):
     def __init__(self, api_key_id, private_key_file_path, host=None):
         if host is None:
-            host = "https://my.narvi.com"
+            host = "https://api.narvi.com"
         self.request_client = RequestClient(api_key_id, private_key_file_path, host)
 
     @classmethod

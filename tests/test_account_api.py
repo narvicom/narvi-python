@@ -2,7 +2,7 @@ from unittest.mock import patch, mock_open
 
 import pytest
 
-from narvi.main import NarviAccountClient
+from narvi.client import NarviAccountClient
 
 PRIVATE_KEY = """-----BEGIN EC PRIVATE KEY-----
 MHcCAQEEIKE0CvV8msB6nqufE4rwOLAHKISAxKEvVnSUHGf0rYkVoAoGCCqGSM49
@@ -51,13 +51,13 @@ class TestAccountAPi(object):
             "/rest/v1.0/account/list",
             status_code=200,
             json={'next': None, 'previous': None, 'results': [
-                {'pid': 'KFGKJ5L27ASGTZAO', 'number': 'FI2279600000000000', 'role': 'ADMIN', 'balance': 2546,
+                {'pid': 'KFGKJ5L27ASGTZAO', 'number': 'FI2279600000000000', 'balance': 2546,
                  'currency': 'EUR', 'name': 'aloha', 'kind': 'PRIVATE'},
-                {'pid': 'ODZ5SP5YO9NZCDGU', 'number': 'FI4279634267890562', 'role': 'ADMIN', 'balance': 9900790,
+                {'pid': 'ODZ5SP5YO9NZCDGU', 'number': 'FI4279634267890562', 'balance': 9900790,
                  'currency': 'EUR', 'name': 'Name 2', 'kind': 'PRIVATE'},
-                {'pid': 'DIRPN6V8EHO46EPR', 'number': 'FI2112345600000785', 'role': 'ADMIN', 'balance': 13959,
+                {'pid': 'DIRPN6V8EHO46EPR', 'number': 'FI2112345600000785', 'balance': 13959,
                  'currency': 'EUR', 'name': 'Name 1', 'kind': 'PRIVATE'},
-                {'pid': '7WP6GEDZ5ER618AD', 'number': 'FI1410093000123458', 'role': 'ADMIN', 'balance': 297,
+                {'pid': '7WP6GEDZ5ER618AD', 'number': 'FI1410093000123458', 'balance': 297,
                  'currency': 'EUR', 'name': 'Name 0', 'kind': 'PRIVATE'}]}
         )
         response = http_client.accounts_list()
@@ -83,7 +83,6 @@ class TestAccountAPi(object):
             json={
                 'pid': 'KFGKJ5L27ASGTZAO',
                 'number': 'FI2279600000000000',
-                'role': 'ADMIN',
                 'balance': 2546,
                 'currency': 'EUR',
                 'name': 'aloha',
