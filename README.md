@@ -9,6 +9,7 @@ REST principles for ease of integration. Here are some key points to keep in min
 - **JSON Request and Response**: You can send JSON-encoded request bodies and expect JSON-encoded responses.
 - **Standard HTTP Codes**: Narvi utilizes standard HTTP response codes for indicating success or failure.
 - **Authentication**: Authentication is handled using API keys and private keys.
+- **Request Identification**: Each request must include a unique request ID using the `API-REQUEST-ID` header. The request ID must be a valid UUID and cannot be duplicated across requests.
 
 ## Object Updates
 
@@ -92,20 +93,26 @@ these endpoints:
    response = narvi_account_client.accounts_retrieve(account_pid)
    ```
 
-3. **Retrieve Transaction Endpoint**: Access detailed information about a specific transaction using its public unique
+3. **Get Account Balance Endpoint**: Retrieve the balance of a specific account for a given date.
+
+   ```python
+   response = narvi_account_client.accounts_balance(account_pid, date)
+   ```
+
+4. **Retrieve Transaction Endpoint**: Access detailed information about a specific transaction using its public unique
    identifier.
 
    ```python
    response = narvi_account_client.transactions_retrieve(transaction_pid)
    ```
 
-4. **List Transactions for an Account Endpoint**: Retrieve a list of transactions associated with a specific account.
+5. **List Transactions for an Account Endpoint**: Retrieve a list of transactions associated with a specific account.
 
    ```python
    response = narvi_account_client.transactions_list(account_pid)
    ```
 
-5. **Create Transaction Endpoint**: Initiate a new transaction within the Narvi platform.
+6. **Create Transaction Endpoint**: Initiate a new transaction within the Narvi platform.
 
    ```python
    response = narvi_account_client.transaction_create(account_pid, amount, currency, title, recipient_account_number, recipient_name, recipient_address, recipient_city, recipient_zip_code, recipient_country)
@@ -176,8 +183,6 @@ response = narvi_account_client.transactions_list(account_pid="KFGKJ5L27ASGTZAO"
 You can customize the filter criteria according to your application's needs.
 
 By leveraging the pagination system, cursor-based navigation, and filtering capabilities, you can efficiently manage and retrieve the data you require from Narvi's API while ensuring a smooth user experience in your application.
-
-
 
 For more details and examples, please refer to our official [Narvi API documentation](https://api.narvi.com).
 
