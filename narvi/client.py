@@ -93,9 +93,6 @@ class NarviAccountClient(object):
     def accounts_retrieve(self, account_pid):
         return accounts["retrieve"](client=self.request_client, account_pid=account_pid)
 
-    def accounts_balance(self, account_pid, date):
-        return accounts["balance"](client=self.request_client, account_pid=account_pid, date=date)
-
     def transaction_create(self, account_pid, amount, currency, title, recipient_account_number,
                            recipient_name, recipient_address=None, recipient_zip_code=None,
                            recipient_city=None, recipient_country=None):

@@ -8,9 +8,5 @@ accounts = {
     "retrieve": api_call({
         "method": 'GET',
         "path": '/rest/v1.0/account/retrieve/{account_pid}'
-    }),
-    "balance": api_call({
-        "method": 'GET',
-        "path": '/baas/v1.0/account/{account_pid}/balance/{date}'
     })
 }
