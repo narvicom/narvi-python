@@ -3,6 +3,7 @@ import hashlib
 import requests
 import canonicaljson
 import urllib.parse
+import uuid
 
 from cryptography.hazmat.primitives.asymmetric import ec
 from cryptography.hazmat.primitives import hashes, serialization
@@ -22,10 +23,10 @@ class RequestClient(object):
         with open(private_key_file_path, 'rb') as private_key_file:
             return serialization.load_pem_private_key(private_key_file.read(), password=None)
 
-    def sign_request(self, url, method, nonce, query_params=None, payload=None):
+    def sign_request(self, url, method, request_id, query_params=None, payload=None):
         """Generate a signature for the request."""
 
-        hash_elems = [url, method, nonce]
+        hash_elems = [url, method, request_id]
 
         if query_params:
             hash_elems.append(canonicaljson.encode_canonical_json(query_params).decode())
@@ -37,15 +38,16 @@ class RequestClient(object):
         signature = self.private_key.sign(descriptor, ec.ECDSA(hashes.SHA256()))
         return base64.b64encode(signature).decode('utf-8')
 
-    def send_request(self, url, method, nonce, query_params=None, payload=None):
+    def send_request(self, url, method, query_params=None, payload=None):
         """Send an API request and return the response."""
 
         full_url = urllib.parse.urljoin(self.host, url)
+        request_id = str(uuid.uuid4())
 
         headers = {
             'API-KEY-ID': self.api_key_id,
-            'API-REQUEST-TIMESTAMP': nonce,
-            'API-REQUEST-SIGNATURE': self.sign_request(full_url, method, nonce, query_params, payload),
+            'API-REQUEST-ID': request_id,
+            'API-REQUEST-SIGNATURE': self.sign_request(full_url, method, request_id, query_params, payload),
             'Content-Type': 'application/json',
         }
 

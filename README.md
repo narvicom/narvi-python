@@ -9,6 +9,7 @@ REST principles for ease of integration. Here are some key points to keep in min
 - **JSON Request and Response**: You can send JSON-encoded request bodies and expect JSON-encoded responses.
 - **Standard HTTP Codes**: Narvi utilizes standard HTTP response codes for indicating success or failure.
 - **Authentication**: Authentication is handled using API keys and private keys.
+- **Request Identification**: Each request must include a unique request ID using the `API-REQUEST-ID` header. The request ID must be a valid UUID and cannot be duplicated across requests.
 
 ## Object Updates
 
@@ -176,8 +177,6 @@ response = narvi_account_client.transactions_list(account_pid="KFGKJ5L27ASGTZAO"
 You can customize the filter criteria according to your application's needs.
 
 By leveraging the pagination system, cursor-based navigation, and filtering capabilities, you can efficiently manage and retrieve the data you require from Narvi's API while ensuring a smooth user experience in your application.
-
-
 
 For more details and examples, please refer to our official [Narvi API documentation](https://api.narvi.com).
 
