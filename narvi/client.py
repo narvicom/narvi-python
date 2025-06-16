@@ -22,10 +22,10 @@ class RequestClient(object):
         with open(private_key_file_path, 'rb') as private_key_file:
             return serialization.load_pem_private_key(private_key_file.read(), password=None)
 
-    def sign_request(self, url, method, nonce, query_params=None, payload=None):
+    def sign_request(self, url, method, request_identifier, query_params=None, payload=None):
         """Generate a signature for the request."""
 
-        hash_elems = [url, method, nonce]
+        hash_elems = [url, method, request_identifier]
 
         if query_params:
             hash_elems.append(canonicaljson.encode_canonical_json(query_params).decode())
@@ -37,17 +37,26 @@ class RequestClient(object):
         signature = self.private_key.sign(descriptor, ec.ECDSA(hashes.SHA256()))
         return base64.b64encode(signature).decode('utf-8')
 
-    def send_request(self, url, method, nonce, query_params=None, payload=None):
+    def send_request(self, url, method, request_id=None, timestamp=None, query_params=None, payload=None):
         """Send an API request and return the response."""
+
+        if not request_identifier:
+            raise ValueError("request_identifier must be provided")
 
         full_url = urllib.parse.urljoin(self.host, url)
 
+        request_identifier = request_id if request_id is not None else timestamp
+
         headers = {
             'API-KEY-ID': self.api_key_id,
-            'API-REQUEST-TIMESTAMP': nonce,
-            'API-REQUEST-SIGNATURE': self.sign_request(full_url, method, nonce, query_params, payload),
+            'API-REQUEST-SIGNATURE': self.sign_request(full_url, method, request_identifier, query_params, payload),
             'Content-Type': 'application/json',
         }
+
+        if request_id is not None:
+            headers['API-REQUEST-ID'] = request_id
+        if timestamp is not None:
+            headers['API-REQUEST-TIMESTAMP'] = timestamp
 
         response = requests.request(method, full_url, headers=headers, json=payload, params=query_params)
 
@@ -83,6 +92,9 @@ class NarviAccountClient(object):
 
     def accounts_retrieve(self, account_pid):
         return accounts["retrieve"](client=self.request_client, account_pid=account_pid)
+
+    def accounts_balance(self, account_pid, date):
+        return accounts["balance"](client=self.request_client, account_pid=account_pid, date=date)
 
     def transaction_create(self, account_pid, amount, currency, title, recipient_account_number,
                            recipient_name, recipient_address=None, recipient_zip_code=None,
