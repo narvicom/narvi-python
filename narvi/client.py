@@ -23,9 +23,10 @@ class RequestClient(object):
         with open(private_key_file_path, 'rb') as private_key_file:
             return serialization.load_pem_private_key(private_key_file.read(), password=None)
 
-    def sign_request(self, url, method, request_id, query_params=None, payload=None):
+    def sign_request(self, url, method, query_params=None, payload=None):
         """Generate a signature for the request."""
 
+        request_id = str(uuid.uuid4())
         hash_elems = [url, method, request_id]
 
         if query_params:
@@ -36,18 +37,18 @@ class RequestClient(object):
 
         descriptor = hashlib.sha256(("".join([elem for elem in hash_elems])).encode()).digest()
         signature = self.private_key.sign(descriptor, ec.ECDSA(hashes.SHA256()))
-        return base64.b64encode(signature).decode('utf-8')
+        return base64.b64encode(signature).decode('utf-8'), request_id
 
     def send_request(self, url, method, query_params=None, payload=None):
         """Send an API request and return the response."""
 
         full_url = urllib.parse.urljoin(self.host, url)
-        request_id = str(uuid.uuid4())
+        signature, request_id = self.sign_request(full_url, method, query_params, payload)
 
         headers = {
             'API-KEY-ID': self.api_key_id,
             'API-REQUEST-ID': request_id,
-            'API-REQUEST-SIGNATURE': self.sign_request(full_url, method, request_id, query_params, payload),
+            'API-REQUEST-SIGNATURE': signature,
             'Content-Type': 'application/json',
         }
 
